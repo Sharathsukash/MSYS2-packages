@@ -1,0 +1,48 @@
+# Contributor: Frederic Wang <fred.wang@free.fr>
+
+_realname=pycparser
+pkgbase=${_realname}
+pkgname=("python-${_realname}")
+provides=("python3-${_realname}")
+conflicts=("python3-${_realname}")
+replaces=("python3-${_realname}")
+pkgver=2.21
+pkgrel=3
+pkgdesc='Complete parser of the C language, written in pure Python (mingw-w64)'
+arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32' 'clangarm64')
+url='https://github.com/eliben/pycparser'
+license=('BSD')
+depends=("python"
+         "python-ply")
+makedepends=("python-setuptools")
+source=("${_realname}-${pkgver}.tar.gz::https://github.com/eliben/pycparser/archive/release_v${pkgver}.tar.gz")
+sha256sums=('3c797eb2eb1ba57772bb99ffa7caed23c3a2c2ae58daef114c9b09d3a6da97e2')
+
+prepare() {
+  cd "${srcdir}"
+  rm -rf python-build-${CARCH} | true
+  cp -r "${_realname}-release_v${pkgver}" "python-build-${CARCH}"
+}
+
+build() {
+  msg "Python build for ${CARCH}"
+  cd "${srcdir}/python-build-${CARCH}"
+  /usr/bin/python setup.py build
+  cd pycparser
+  /usr/bin/python _build_tables.py
+}
+
+check() {
+  cd "${srcdir}/python-build-${CARCH}"
+  /usr/bin/python -m unittest discover
+}
+
+package() {
+  cd "${srcdir}/python-build-${CARCH}"
+  MSYS2_ARG_CONV_EXCL="--prefix=;--install-scripts=;--install-platlib=" \
+  /usr/bin/python setup.py install --prefix=/usr \
+    --root="${pkgdir}" --optimize=1 --skip-build
+  
+  install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/python-${_realname}/LICENSE"
+}
