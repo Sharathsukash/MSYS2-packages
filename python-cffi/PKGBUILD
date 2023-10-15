@@ -23,7 +23,7 @@ checkdepends=("python-pytest-runner")
 source=("https://pypi.org/packages/source/${_realname:0:1}/${_realname}/${_realname}-${pkgver}.tar.gz"
         "mingw-non-x86.patch")
 sha256sums=('bcb3ef43e58665bbda2fb198698fcae6776483e0c4a631aa5647806c25e02cc0'
-            'c8a8ea2d65932ea0b62eae56dbc8afd6baacaadc7cb284ca0e4edf7ed1460c52')
+            'D9A56AD4104187FE3FE4F6C95C5697750345C349245DCD88C04D9B9F58E1F921')
 
 prepare() {
   cd "${srcdir}"
